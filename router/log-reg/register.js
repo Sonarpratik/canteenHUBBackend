@@ -5,6 +5,7 @@ const Can = require("../../database/schemaS/canSchema");
 const { isAuth ,isLogin} = require("../../all-passport/passportConfig");
 
 const passport = require("passport");
+const Contri = require("../../database/schemaS/contriSchema");
 
 
 
@@ -79,10 +80,44 @@ const pro =await Can.findById(req.params.id)
 
   res.send([pro])
 })
+register.get('/product/:id',async (req,res)=>{
+const pro =await Can.find()
+const data =  pro?.flatMap(obj => obj.products)
+// console.log(req.params.id)
+  
+const uid =  data.filter((item)=>item.product===req.params.id)
+
+
+
+  res.send(uid[0])
+})
 register.get('/menu/',async (req,res)=>{
 const pro =await Can.find()
 
   res.send(pro)
+})
+
+
+register.post('/contribution',async(req,res)=>{
+
+
+  const Cont = new Contri({
+    name:req.body.name,
+    desc: req.body.desc,
+
+    img: req.body.img
+
+  });
+  await Cont.save();
+  res.status(200).send("User Created");
+  
+})
+register.get('/contribution',async(req,res)=>{
+
+
+  const Cont = await Contri.find();
+  res.status(200).send(Cont);
+  
 })
 
 
