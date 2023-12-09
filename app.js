@@ -1,18 +1,12 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-var fs = require("fs")
-const https=require('https')
 
-const key=fs.readFileSync('private.key')
-const cert=fs.readFileSync('certificate.crt')
-
-const cred={
-  key,cert
-}
+const paymentRoute =require ("./routes/paymentRouter.js");
 
 
-const port = process.env.PORT || 8000;
+
+const port = process.env.PORT || 4000;
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -22,39 +16,14 @@ const cors = require("cors")
 app.use(cors());
 
 
-http = require('http').Server(app),
-io = require('socket.io')(http);
-    fs = require('fs'),
-    ccav = require('./ccavutil.js'),
-    qs = require('querystring'),
-    ccavReqHandler = require('./ccavRequestHandler.js'),
-    ccavResHandler = require('./ccavResponseHandler.js');
 
 
 
-app.get('/payment', function(req, res){
-    res.sendFile(__dirname + '/dataFrom.html');
-});
-app.get('/.well-known/pki-validation/117B8B17A66CCF2BE4A552E04D8EBBFC.txt',(req,res)=>{
-  res.sendFile(__dirname + `/117B8B17A66CCF2BE4A552E04D8EBBFC.txt`);
 
-})
 
-io.on('connection', function(socket){
-    console.log('a user connected');
-});
 
 app.get('/about', function (req, res){
         res.render('dataFrom.html');
-});
-
-app.post('/ccavRequestHandler', function (request, response){
-    ccavReqHandler.postReq(request, response);
-});
-
-
-app.post('/ccavResponseHandler', function (request, response){
-        ccavResHandler.postRes(request, response);
 });
 
 require('./allFiles/Allfun')
@@ -65,17 +34,25 @@ require('./db/conn')
 //to understand json file
 app.use(express.json());
 
+
+app.use("/api", paymentRoute);
+
+app.get("/api/getkey",async (req, res) =>{
+
+  try {
+    
+    await res.status(200).json({ key: process.env.RAZORPAY_API_KEY })
+  } catch (error) {
+    console.log(error)
+  }
+}
+);
 //We connect to the router to free the space in app js
-var authRouter=require('./router/passport/oauth')
 // var requestRoute=require('./router/auth')
-app.use('/oauth',authRouter)
 app.use(require('./router/auth'))
-app.use('/aws',require('./router/aws'))
 // app.use(require('./router/auth'))
 app.use(require('./router/product'))
-app.use(require('./router/cart'))
-app.use(require('./router/order'))
-app.use('/api',require('./router/review'))
+app.use(require('./router/hostel'))
 // require('./router/auth')
 
 
@@ -92,5 +69,10 @@ app.listen(port, () => {
 });
 
 
-const httpsServer=https.createServer(cred,app)
-httpsServer.listen(443)
+
+
+
+
+
+
+

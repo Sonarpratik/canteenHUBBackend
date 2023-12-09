@@ -9,14 +9,11 @@ const adminSchema = new mongoose.Schema({
   phone: { type: Number, required: true },
   password: { type: String, required: true },
 
+
+  supervisor_id: { type: String},
+  main_supervisor_id: { type: String},
   role:{type:String,default:"staff"},//staff and admin /user==customer
-  saree_create:{type:Boolean,default:false},
-  saree_edit:{type:Boolean,default:false},
-  saree_delete:{type:Boolean,default:false},
-  saree_view:{type:Boolean,default:false},
-  user_view:{type:Boolean,default:false},
-  user_edit:{type:Boolean,default:false},
-  user_delete:{type:Boolean,default:false},
+
   tokens: [
     {
       token: {
@@ -37,7 +34,6 @@ adminSchema.pre("save", async function (next) {
     console.log("hi i am insdie")
 
     this.password = await bcrypt.hash(this.password, 12);
-    // this.cpassword = await bcrypt.hash(this.cpassword, 12);
 
   }
   next();

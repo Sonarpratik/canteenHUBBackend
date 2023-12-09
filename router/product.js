@@ -13,7 +13,6 @@ const {
   IsAdmin_Product_Update,
   IsAdmin_Product_Delete,
 } = require("../middleware/authenticate.js");
-const Trending = require("../models/trendingSchema");
 
 router.post("/api/product", IsAdmin_Product_Create, async (req, res) => {
   try {
@@ -47,7 +46,7 @@ router.patch("/api/product/:id", IsAdmin_Product_Update, async (req, res) => {
 });
 
 //Get All Products
-router.get("/api/product",Authenticate, async (req, res) => {
+router.get("/api/product", async (req, res) => {
   try {
     const { page, limit, product_name,sort,max_price,min_price,min_discount,max_discount, ...resa } = req.query;
     if (product_name) {
@@ -93,58 +92,10 @@ router.get("/api/product",Authenticate, async (req, res) => {
     console.log(err);
   }
 });
-router.get("/api/trending", async (req, res) => {
-  try {
-  
-    const data = await Trending.find();
-    // const productIds=data.map((item)=>item.product_id)
-    // const productx=await Trending.find({_id:{ $in: productIds } })
-
-    const productIds=data.map((item)=>item.product_id)
-const productx=await Product.find({_id:{ $in: productIds } })
-const new_data=productx.filter((item)=>item.active===true)
-
-    res.status(200).json(new_data);
-  } catch (err) {
-    console.log(err);
-  }
-});
-router.delete("/api/trending",IsAdmin, async (req, res) => {
-  try {
-  
-    const data = await Trending.findOneAndDelete({product_id:req.body._id});
-    // const productIds=data.map((item)=>item.product_id)
-    // const productx=await Trending.find({_id:{ $in: productIds } })
 
 
-    res.status(200).json(data);
-  } catch (err) {
-    console.log(err);
-  }
-});
 
-//create trending product by _id
-router.post("/api/trending",IsAdmin, async (req, res) => {
-  try {
-  console.log(req.body._id)
 
-  const data={
-    product_id:req.body._id
-  }
-  const found=await Trending.findOne({product_id:req.body._id})
-if(found){
-  res.status(200).json({message:"Already Added"})
-}else{
-
-  const product = new Trending(data);
-  
-  const created = await product.save();
-  res.status(201).json(created);
-}
-  } catch (err) {
-    console.log(err);
-  }
-});
 
 router.get("/api/product/admin",IsAdmin, async (req, res) => {
   try {
@@ -199,6 +150,8 @@ router.get("/api/product/:id", async (req, res) => {
 
     const product = await Product.findById({ _id: id });
 
+
+    
     res.status(200).json(product);
   } catch (err) {
     res.status(404).json({ data: "product not found" });
