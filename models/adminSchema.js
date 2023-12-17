@@ -9,7 +9,6 @@ const adminSchema = new mongoose.Schema({
   phone: { type: Number, required: true },
   password: { type: String, required: true },
 
-
   supervisor_id: { type: String},
   main_supervisor_id: { type: String},
   role:{type:String,default:"staff"},//staff and admin /user==customer

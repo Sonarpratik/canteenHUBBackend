@@ -36,6 +36,8 @@ app.use(express.json());
 
 
 app.use("/api", paymentRoute);
+app.use('/aws',require('./router/aws'))
+
 
 app.get("/api/getkey",async (req, res) =>{
 
