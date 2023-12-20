@@ -19,6 +19,8 @@ const hostelSchema = new mongoose.Schema({
   hostel_features: {
     single_bed: { type: Boolean, default: false },
     double_bed: { type: Boolean, default: false },
+    three_bed: { type: Boolean, default: false },
+    four_bed: { type: Boolean, default: false },
     attach_washroom: { type: Boolean, default: false },
     study_table: { type: Boolean, default: false },
     hot_water: { type: Boolean, default: false },

@@ -17,7 +17,10 @@ const {
 router.post("/api/hostel", async (req, res) => {
   try {
     const lowerCaseData = Object.keys(req.body).reduce((acc, key) => {
-      acc[key] = typeof req.body[key] === 'string' ? req.body[key].toLowerCase() : req.body[key];
+      acc[key] =
+        typeof req.body[key] === "string"
+          ? req.body[key].toLowerCase()
+          : req.body[key];
       return acc;
     }, {});
 
@@ -28,40 +31,72 @@ router.post("/api/hostel", async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(401).json(err);
-
   }
 });
 router.get("/api/hostel", async (req, res) => {
   try {
-    const { page, limit, hostel_name,max_price,single_bed,min_price,double_bed,attach_washroom,study_table,hot_water,drinking_water, ...resa } = req.query;
+    const {
+      distance_from_college,
+      page,
+      limit,
+      hostel_name,
+      max_price,
+      single_bed,
+      min_price,
+      double_bed,
+      attach_washroom,
+      study_table,
+      hot_water,
+      drinking_water,
+      three_bed,
+      four_bed,
+      ...resa
+    } = req.query;
     if (hostel_name) {
       resa.hostel_name = { $regex: hostel_name };
     }
+    if (distance_from_college) {
+      resa.distance_from_college = {
+        $lte: parseInt(distance_from_college),
+      };
+    }
+    const orConditions = [];
+
     if (single_bed) {
-      resa['hostel_features.single_bed'] = single_bed;
-    } 
+      orConditions.push({ "hostel_features.single_bed": single_bed });
+    }
+    if (three_bed) {
+      orConditions.push({ "hostel_features.three_bed": three_bed });
+    }
+    if (four_bed) {
+      orConditions.push({ "hostel_features.four_bed": four_bed });
+    }
     if (double_bed) {
-      resa['hostel_features.double_bed'] = double_bed;
-    } 
+      orConditions.push({ "hostel_features.double_bed": double_bed });
+    }
     if (attach_washroom) {
-      resa['hostel_features.attach_washroom'] = attach_washroom;
-    } 
+      orConditions.push({ "hostel_features.attach_washroom": attach_washroom });
+    }
     if (study_table) {
-      resa['hostel_features.study_table'] = study_table;
-    } 
+      orConditions.push({ "hostel_features.study_table": study_table });
+    }
     if (hot_water) {
-      resa['hostel_features.hot_water'] = hot_water;
-    } 
+      orConditions.push({ "hostel_features.hot_water": hot_water });
+    }
     if (drinking_water) {
-      resa['hostel_features.drinking_water'] = drinking_water;
-    } 
-    
+      orConditions.push({ "hostel_features.drinking_water": drinking_water });
+    }
+
+    const resa1 = { ...resa }; // Create a new object based on resa
+
+    if (orConditions.length > 0) {
+      resa1.$or = orConditions; // Include $or if orConditions is not empty
+    }
+    console.log(resa1);
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
-    const totalCount = await Hostel.countDocuments(resa);
-    let query =  Hostel.find(resa);
-
-
+    const totalCount = await Hostel.countDocuments(resa1);
+    let query = Hostel.find(resa1);
 
     const data = await query.skip(startIndex).limit(limit);
     // Calculate total pages for pagination
@@ -79,7 +114,6 @@ router.get("/api/hostel", async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(401).json(err);
-
   }
 });
 router.get("/api/hostel/:id", async (req, res) => {
@@ -87,9 +121,22 @@ router.get("/api/hostel/:id", async (req, res) => {
     const id = req.params.id;
 
     const hostel = await Hostel.findById({ _id: id });
+ 
 
+    res.status(200).json(hostel);
+  } catch (err) {
+    res.status(404).json({ data: "hostel not found" });
 
-    
+    console.log(err);
+  }
+});
+router.delete("/api/hostel/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const hostel = await Hostel.findByIdAndDelete({ _id: id });
+ 
+
     res.status(200).json(hostel);
   } catch (err) {
     res.status(404).json({ data: "hostel not found" });
@@ -102,10 +149,15 @@ router.get("/api/MYhostel/:id", async (req, res) => {
     const id = req.params.id;
 
     const hostel = await Hostel.findOne({ created_by: id });
+    if(!hostel){
+      const hostel2=await Hostel.findById({_id:id})
+    res.status(200).json(hostel2);
 
+    }else{
+      res.status(200).json(hostel);
 
-    
-    res.status(200).json(hostel);
+    }
+
   } catch (err) {
     res.status(404).json({ data: "hostel not found" });
 
