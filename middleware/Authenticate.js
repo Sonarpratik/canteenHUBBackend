@@ -448,6 +448,7 @@ const IsAdminAndStaff = async (req, res, next) => {
     res.status(401).json({ error: "Wrong Token" });
   }
 };
+
 module.exports = {
   Authenticate,
   IsAdmin,

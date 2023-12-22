@@ -13,6 +13,12 @@ const {
   IsAdmin_Product_Update,
   IsAdmin_Product_Delete,
 } = require("../middleware/authenticate.js");
+const weightRatings = 0.3;
+const weightHitCount = 0.2;
+const weightPrice = 0.2;
+const weightBookings = 0.3;
+
+// Calculate the weighted sum for each h,ostel
 
 router.post("/api/hostel", async (req, res) => {
   try {
