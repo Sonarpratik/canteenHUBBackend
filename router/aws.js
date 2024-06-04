@@ -5,13 +5,20 @@ const multer = require('multer');
 const multerS3 = require('multer-s3');
 
 // Configure AWS SDK
-const myBucket="siddhisaree"
-aws.config.update({
-  secretAccessKey: 'W3BtqdFuGD93tu0gtut72VcBy6QwDFVxbwnJhr0E',
-  accessKeyId: 'AKIATPHULTLRYBLFHXXA',
-  Bucket:myBucket
-});
+// const myBucket="siddhisaree"
+// aws.config.update({
+//   secretAccessKey: 'W3BtqdFuGD93tu0gtut72VcBy6QwDFVxbwnJhr0E',
+//   accessKeyId: 'AKIATPHULTLRYBLFHXXA',
+//   Bucket:myBucket
+// });
 
+
+const myBucket = "swarupbucket";
+aws.config.update({
+  secretAccessKey: "gk8Da116f0raNWgQgdgl4mzYPunyTWXeHTMAf8OV",
+  accessKeyId: "AKIA4MTWNCYDZYITHS6K",
+  Bucket: myBucket,
+});
 const s3 = new aws.S3();
 // Configure multer and multer-s3
 const upload = multer({
