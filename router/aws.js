@@ -3,7 +3,8 @@ const router = express.Router();
 const aws = require('aws-sdk');
 const multer = require('multer');
 const multerS3 = require('multer-s3');
-
+const dotenv = require("dotenv");
+dotenv.config();
 // Configure AWS SDK
 // const myBucket="siddhisaree"
 // aws.config.update({
@@ -15,8 +16,8 @@ const multerS3 = require('multer-s3');
 
 const myBucket = "swarupbucket";
 aws.config.update({
-  secretAccessKey: "gk8Da116f0raNWgQgdgl4mzYPunyTWXeHTMAf8OV",
-  accessKeyId: "AKIA4MTWNCYDZYITHS6K",
+  secretAccessKey: process.env.AWS_KEY,
+  accessKeyId: process.env.AWS_KEY2,
   Bucket: myBucket,
 });
 const s3 = new aws.S3();
