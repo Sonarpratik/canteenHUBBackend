@@ -52,6 +52,7 @@ app.get("/api/getkey",async (req, res) =>{
 //We connect to the router to free the space in app js
 // var requestRoute=require('./router/auth')
 app.use(require('./router/auth'))
+app.use(require('./router/dashboard.js'))
 // app.use(require('./router/auth'))
 app.use(require('./router/product'))
 app.use(require('./router/hostel'))
